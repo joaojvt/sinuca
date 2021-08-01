@@ -6,9 +6,9 @@ exports.seed = function(knex) {
         {id_team: 1, id_table: 1, points: 10},
         {id_team: 1, id_table: 2, points: 40},
         {id_team: 1, id_table: 3, points: 80},
-        {id_team: 2, id_table: 1, points: 60},
-        {id_team: 2, id_table: 2, points: 60},
-        {id_team: 3, id_table: 1, points: 60},
+        {id_team: 2, id_table: 1, points: 70},
+        {id_team: 2, id_table: 2, points: 30},
+        {id_team: 3, id_table: 1, points: 10},
       ]);
     });
 };

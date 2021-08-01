@@ -1,103 +1,91 @@
-const knex = require('../database')
+const PatternCrudController = require('./PatternCrudController');
+const path = require('path');
+const Team = require(path.resolve('src', 'database', 'models', 'Team'))
+const Table = require(path.resolve('src', 'database', 'models', 'Table'))
 
-class TableController {
-  async getTables(req, res) {
-    const table = await knex.select('*').from('table')
-    return res.status(200).send(table);
+const tableModel = new Table();
+const teamModel =  new Team()
+
+const requiredAttribuites = [
+  'name',
+  'points_to_win',
+  'prize'
+]
+
+class TableController extends PatternCrudController {
+  constructor() {
+    super(tableModel, requiredAttribuites)
   }
 
-  async createTable(req, res) {
-    const table = req.body;
-    if (!table.points_to_win || !table.prize) {
-      return res.status(400).send({
+  async getTableTeams(req, res){
+    const { id } = req.params
+    const teams = await this.model.getTableTeams(id)
+    res.send(teams);
+  }
+
+  async addTeamToTable(req, res) {
+    const { tableId, teamId } = req.body
+
+    if (!tableId|| !teamId) {
+      res.status(400).send({
         msg: 'Invalid body'
-      });
-    }
-
-    await knex('table').insert(table)
-    return res.status(201).send();
-  }
-
-  async getTableById(req, res) {
-    const { id } = req.params
-
-    if (!id) res.status(200).send([])
-
-    const table = await knex('table').where('id', id).first()
-    return res.status(200).send(table)
-  }
-
-  async editTable(req, res) {
-    const table = req.body;
-    if (!table.points_to_win || !table.prize) {
-      return res.status(400).send({
-        msg: 'Invalid body',
-        table
-      });
+      })
     }
     
-    const { id } = table
-    
-    if(!id) res.status(400).send({
-      msg: 'No id passed'
-    })
-
-    await knex('table').where({ id }).update(table)
-    return res.status(200).send();
-  }
-
-  async deleteTable(req, res) {
-    const { id } = req.params
-
-    if(!id) res.status(400).send({
-      msg: 'No id passed'
-    })
-    
-    await knex('table').where('id', id).delete()
-    return res.status(200).send()
-  }
-
-  async addTeamToTable(req, res){
-    const { id_team, id_table } = req.body
-    const table =  knex('table').where('id_table', id_table).first()
+    const table = tableModel.findById(tableId)
     if (!table) {
-      return res.status(404).send({
-        msg: 'table not found'
-      })
+      return res.sendStatus(404)
     }
-    const team =  knex('team').where('id_team', id_team).first()
+
+    const team = teamModel.findById(teamId)
     if (!team) {
-      return res.status(404).send({
-        msg: 'team not found'
+      return res.sendStatus(404)
+    }
+
+    const teamExistsOntable = await tableModel.findTeamTable(tableId, teamId)
+
+    if (teamExistsOntable) {
+      return res.status(400).send({
+        msg: 'team already on table'
       })
     }
 
-    await knex('team_table').insert({ id_team, id_table, ponits: 0})
+    await this.model.addTeamToTable({
+      id_table: tableId,
+      id_team: teamId,
+      points: 0,
+    })
 
-    res.status(201).send()
+    res.sendStatus(201)
   }
 
-  async updateTeamPoits(req, res){
+  async updateTeamPoints(req, res) {
     const { tableId, teamId, points } = req.body
-    const tableMaxPoints = await knex.select('points_to_win')
-      .from('table')
-      .where('id', tableId)
-    const currentTeamPoints = await knex.select('points')
-      .from('team_table')
-      .where('id_team', teamId)
-    const newTeamPoints =  points + currentTeamPoints;
+
+    if (!tableId || !teamId || !points) {
+      res.status(400).send({
+        msg: 'Invalid body'
+      })
+    }
+
+    const tableMaxPoints = this.model.getTableMaxPoints(tableId)
+    const {points: currentTeamPoints} = await teamModel.getTeamPointsInTable(tableId, teamId)
+
+    const newTeamPoints = points + currentTeamPoints;
 
     if (newTeamPoints > tableMaxPoints) {
       newTeamPoints = tableMaxPoints;
     }
 
-    await knex('team_points')
-      .update({ points: newTeamPoints })
-      .where({ 
-        id_team: teamId, 
-        id_table: tableId,
-      })
-    res.status(200).send();
+    await this.model.updateTeamPoints(newTeamPoints, teamId, tableId)
+  
+    res.status(200).send()
+  }
+
+  async tableTopTeam(req, res) {
+    const tableId = req.params.id
+    const team = await this.model.topTableTeam(tableId)
+    res.status(200).send(team)
   }
 
 }
