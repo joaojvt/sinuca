@@ -4,7 +4,7 @@ const Team = require(path.resolve('src', 'database', 'models', 'Team'))
 const Table = require(path.resolve('src', 'database', 'models', 'Table'))
 
 const tableModel = new Table();
-const teamModel =  new Team()
+const teamModel = new Team()
 
 const requiredAttribuites = [
   'name',
@@ -17,7 +17,7 @@ class TableController extends PatternCrudController {
     super(tableModel, requiredAttribuites)
   }
 
-  async getTableTeams(req, res){
+  async getTableTeams(req, res) {
     const { id } = req.params
     const teams = await this.model.getTableTeams(id)
     res.send(teams);
@@ -26,12 +26,12 @@ class TableController extends PatternCrudController {
   async addTeamToTable(req, res) {
     const { tableId, teamId } = req.body
 
-    if (!tableId|| !teamId) {
+    if (!tableId || !teamId) {
       res.status(400).send({
         msg: 'Invalid body'
       })
     }
-    
+
     const table = tableModel.findById(tableId)
     if (!table) {
       return res.sendStatus(404)
@@ -69,7 +69,7 @@ class TableController extends PatternCrudController {
     }
 
     const tableMaxPoints = this.model.getTableMaxPoints(tableId)
-    const {points: currentTeamPoints} = await teamModel.getTeamPointsInTable(tableId, teamId)
+    const { points: currentTeamPoints } = await teamModel.getTeamPointsInTable(tableId, teamId)
 
     const newTeamPoints = points + currentTeamPoints;
 
@@ -78,7 +78,7 @@ class TableController extends PatternCrudController {
     }
 
     await this.model.updateTeamPoints(newTeamPoints, teamId, tableId)
-  
+
     res.status(200).send()
   }
 
