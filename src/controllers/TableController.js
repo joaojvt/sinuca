@@ -45,8 +45,15 @@ class TableController extends PatternCrudController {
     const teamExistsOntable = await tableModel.findTeamTable(tableId, teamId)
 
     if (teamExistsOntable) {
-      return res.status(400).send({
+      return res.status(409).send({
         msg: 'team already on table'
+      })
+    }
+
+    const totalTeams = await tableModel.countTeamTebles(tableId)
+    if (totalTeams === 10) {
+      return res.status(409).send({
+        msg: 'Table on max teams possible'
       })
     }
 

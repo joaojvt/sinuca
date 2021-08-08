@@ -1,5 +1,21 @@
-$primary: #0099cc;
+@import "~bootstrap/scss/bootstrap";
 
-.title {
-  color: $primary;
+
+header {
+  background-color: $teal-600;
+  a.nav-link:hover{
+    text-decoration: underline;
+  }
+}
+.head {
+  height: 90px;
+
+  #logo {
+    height: 50px;
+  }
+}
+
+.btn-create {
+  background-color: $teal-600;
+  color: #fefefe;
 }

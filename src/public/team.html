@@ -5,8 +5,98 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sinuca</title>
+  <link rel="icon" href="/assets/logo.svg">
 </head>
 <body>
-  <h1>teams!</h1>
+  <header class="container-fluid  text-white">
+    <div class="container">
+      <div class="row">
+        <div class="head navbar navbar-expand-lg d-flex align-items-center justify-content-between">
+          <a href="/" class="navbar-brand d-flex align-items-center">
+            <img src="/assets/logo-white.svg" class="d-inline-block align-text-top" id="logo" alt="logo">
+            <h2 class="ms-3 text-white">Times</h2>
+          </a>
+          <nav id="header-nav" class="navbar-nav d-flex flex-direction-row align-items-start ">
+            <a class="nav-link fs-4 link-light" href="/team.html">Times</a>
+            <a class="nav-link fs-4 link-light" href="/table.html">Tabelas</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="container-fluid mt-5">
+    <div id="main" class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <h5 class="card-header">
+              Lista de Times
+            </h5>
+            <div class="card-body">
+              <table id="teams-table" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome do time</th>
+                    <th scope="col">Jogador um</th>
+                    <th scope="col">Jogador dois</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="4">
+                      <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-create btn-success" data-bs-toggle="modal" data-target="#team-create-modal" data-bs-target="#team-create-modal">
+                  Criar time
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- modal create team -->
+  <div class="modal"  id="team-create-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Criar Time</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="form-create-team">
+            <div class="mb-3">
+              <label for="teamName" class="form-label">Nome Time</label>
+              <input type="text" name="name" required minlength="3" class="form-control" id="teamName">
+            </div>
+            <div class="mb-3">
+              <label for="playerOne" class="form-label">Nome jogador um</label>
+              <input type="text" name="player_one" required minlength="3" class="form-control" id="playerOne">
+            </div>
+            <div class="mb-3">
+              <label for="playerTwo" class="form-label">Nome jogador dois</label>
+              <input type="text" name="player_two" required minlength="3" class="form-control" id="playerTwo" >
+            </div>
+            <div class="d-flex  justify-content-end">
+              <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Fechar</button>
+              <button type="submit" class="btn btn-create btn-success" id="saveTeam">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

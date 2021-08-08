@@ -16,6 +16,7 @@ class Table extends PatternCrudModel {
       .from('team')
       .innerJoin('team_table', 'team.id', '=', 'team_table.id_team')
       .where('team_table.id_table', idTable)
+      .orderBy('team_table.points', 'desc')
   }
 
   async getTableMaxPoints(idTable) {
@@ -41,7 +42,11 @@ class Table extends PatternCrudModel {
       }).first()
   }
 
-  async
+  async countTeamTebles(tableId){
+    return await knex('team_table')
+    .count('id_team')
+    .where({ id_table: tableId })
+  }
 
   async topTableTeam(tableId) {
     return await knex.select('team.id', 'team.name', 'team.player_one', 'team.player_two', 'team_table.points')
@@ -51,7 +56,6 @@ class Table extends PatternCrudModel {
       .orderBy('team_table.points', 'desc')
       .first()
   }
-
 }
 
 module.exports = Table

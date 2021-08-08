@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     index: './src/public/js/index.js',
     team: './src/public/js/team.js',
-
+    table: './src/public/js/table.js',
   },
   output: {
     path: path.resolve(__dirname, 'src', 'web'),
@@ -27,14 +27,37 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           'css-loader',
           'sass-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: function () {
+                  return [
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            }
+          }
         ]
       },
       {
         test: /\.css/,
         use: [
           'style-loader',
-          'css-loader'
+          'css-loader',
         ]
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '/assets/[name].[ext]',
+            },
+          },
+        ],
       },
     ]
   },
@@ -48,9 +71,13 @@ module.exports = {
       filename: 'team.html',
       template: './src/public/team.html'
     }),
+    new HtmlWebpackPlugin({
+      filename: 'table.html',
+      template: './src/public/table.html'
+    }),
     new MiniCssExtractPlugin({
       filename: 'styles.css'
-    })
+    }),
   ],
 
   watch: true
