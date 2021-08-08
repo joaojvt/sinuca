@@ -16,7 +16,11 @@ npm i
 npm run migrate:up
 npm run seeds
 ```
+## Realizar build do projetp
 
+```bash
+npm run build
+```
 ## Iniciar projeto
 
 ```bash
